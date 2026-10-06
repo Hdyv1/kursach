@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Device;
 use App\Http\Requests\StoreDeviceRequest;
 use App\Http\Requests\UpdateDeviceRequest;
+use Illuminate\Support\Facades\Auth;
 
 class DeviceController extends Controller
 {
@@ -13,7 +14,13 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        return response()->json(Device::all());
+        if (Auth::check()) {
+            if (Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            return response()->json(Device::all());
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     /**
@@ -37,7 +44,13 @@ class DeviceController extends Controller
      */
     public function show(Device $device)
     {
-        return response()->json($device);
+        if (Auth::check()) {
+            if (Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            return response()->json($device);
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     /**
