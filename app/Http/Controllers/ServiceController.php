@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -29,7 +30,14 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
-        //
+        if (Auth::check()) {
+            if (Auth::user()->role !== 'admin') {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+            $service = Service::create($request->all());
+            return response()->json(['message' => 'Услуга создана', 'service_id' => $service->id], 201);
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     /**
