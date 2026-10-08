@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('repair_order_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('repair_order_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('repair_order_id')->constrained('repair_orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('service_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }

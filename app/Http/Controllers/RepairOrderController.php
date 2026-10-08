@@ -7,6 +7,7 @@ use App\Models\Device;
 use App\Http\Requests\StoreRepairOrderRequest;
 use App\Http\Requests\UpdateRepairOrderRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\RepairOrderService;
 
 class RepairOrderController extends Controller
 {
@@ -15,13 +16,11 @@ class RepairOrderController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            if (Auth::user()->role !== 'admin') {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-            return response()->json(RepairOrder::with('device')->get());
+
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(RepairOrder::with(['device', 'services', 'reviews'])->get());
     }
     /**
      * Show the form for creating a new resource.
@@ -58,7 +57,7 @@ class RepairOrderController extends Controller
      */
     public function show(RepairOrder $order)
     {
-        return response()->json($order->with('device')->first());
+        return response()->json($order->with(['device', 'services', 'reviews'])->first());
     }
 
     /**
@@ -72,9 +71,16 @@ class RepairOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRepairOrderRequest $request, RepairOrder $repairOrder)
+    public function update(UpdateRepairOrderRequest $request, RepairOrder $order)
     {
-        //
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        if($request->status!== 'done' && $request->status !== 'in_progress' && $request->status !== 'pending') {
+            return response()->json(['error' => 'Неверный статус'], 422);
+        }
+        $order->update($request->all());
+        return response()->json(['message' => 'Заявка обновлена', 'order_id' => $order->id], 200);
     }
 
     /**

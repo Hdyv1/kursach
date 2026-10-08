@@ -21,4 +21,12 @@ class RepairOrder extends Model
     {
         return $this->belongsTo(Device::class);
     }
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'repair_order_services');
+    }
+    public function reviews()
+    {
+        return $this->hasMany(RepairOrderReview::class);
+    }
 }
