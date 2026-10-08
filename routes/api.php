@@ -15,5 +15,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [RepairOrderController::class, 'index']);
     Route::get('/device/{device}', [DeviceController::class, 'show']);
     Route::get('/devices', [DeviceController::class, 'index']);
-    Route::post('/service', [ServiceController::class, 'store']);
+    Route::resource('/services', ServiceController::class);
 });

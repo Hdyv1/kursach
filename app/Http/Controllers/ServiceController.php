@@ -14,7 +14,10 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        //
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        return response()->json(Service::all(), 201);
     }
 
     /**
@@ -45,7 +48,10 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        //
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        return response()->json($service, 201);
     }
 
     /**
@@ -61,7 +67,11 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        //
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $service->update($request->all());
+        return response()->json(['message' => 'Услуга обновлена', 'service' => $service], 200);
     }
 
     /**
@@ -69,6 +79,10 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
-        //
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $service->delete();
+        return response()->json(['message' => 'Услуга удалена'], 200);
     }
 }

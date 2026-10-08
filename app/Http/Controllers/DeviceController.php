@@ -48,7 +48,7 @@ class DeviceController extends Controller
             if (Auth::user()->role !== 'admin') {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
-            return response()->json($device);
+            return response()->json($device, 201);
         }
         return response()->json(['error' => 'Unauthorized'], 401);
     }
