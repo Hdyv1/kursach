@@ -6,7 +6,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
@@ -28,5 +28,9 @@ class UserController extends Controller
         } else {
             return response()->json(['errors' => ["password" => ["Неверный логин или пароль"]]], 401);
         }
+    }
+    public function logout(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message'=>'Успешный выход'], 200);
     }
 }

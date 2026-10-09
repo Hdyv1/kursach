@@ -23,4 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/orderServices/{order}/{service}', [RepairOrderServiceController::class, 'destroy']);
     Route::post('/review/{order}', [RepairOrderReviewController::class, 'store']);
     Route::get('/reviews/{order}', [RepairOrderReviewController::class, 'index']);
+    Route::post('/logout', [UserController::class, 'logout']);
 });
