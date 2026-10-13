@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('type');
-            $table->string('brand');
-            $table->string('model');
+            $table->string('type', 50);
+            $table->string('brand', 100);
+            $table->string('model', 100);
             $table->text('problem_description')->nullable();
             $table->timestamps();
         });

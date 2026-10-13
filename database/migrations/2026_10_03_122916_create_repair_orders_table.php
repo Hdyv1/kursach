@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('device_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('client_name');
-            $table->string('client_phone');
-            $table->string('client_email');
+            $table->string('client_name', 100);
+            $table->string('client_phone', 20);
+            $table->string('client_email', 100);
             $table->text('description');
             $table->enum('status', ['new', 'in_progress', 'done'])->default('new');
             $table->integer('final_price')->nullable();
