@@ -17,7 +17,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = $request->password;
         $user->save();
-        return response()->json(["token" => $user->createToken('api')->plainTextToken]);
+        return response()->json(["token" => $user->createToken('api')->plainTextToken], 200);
     }
     public function login(UserLoginRequest $request)
     {

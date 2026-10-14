@@ -13,8 +13,12 @@ class RepairOrderReviewController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(repairOrder $order)
+    public function index($order_id)
     {
+        $order = RepairOrder::where('id', $order_id)->with(['device', 'services', 'reviews'])->first();
+        if (!$order) {
+            return response()->json(['error' => 'Заявка не найдена'], 404);
+        }
         return response()->json($order->reviews()->with('user')->get());
     }
 
@@ -31,8 +35,12 @@ class RepairOrderReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRepairOrderReviewRequest $request, RepairOrder $order)
+    public function store(StoreRepairOrderReviewRequest $request, $order_id)
     {
+        $order = RepairOrder::where('id', $order_id)->first();
+        if (!$order) {
+            return response()->json(['error' => 'Заявка не найдена'], 404);
+        }
         if($order->status !== 'done') {
             return response()->json(['error' => 'Нельзя оставить отзыв на незавершённый заказ'], 422);
         }

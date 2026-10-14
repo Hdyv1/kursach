@@ -26,10 +26,18 @@ class RepairOrderServiceController extends Controller
     {
         //
     }
-    public function serviceAdd(RepairOrder $order, Service $service)
+    public function serviceAdd($order_id, $service_id)
     {
         if(Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $order = RepairOrder::where('id', $order_id)->first();
+        if (!$order) {
+            return response()->json(['error' => 'Заявка не найдена'], 404);
+        }
+        $service = Service::where('id', $service_id)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Услуга не найдена'], 404);
         }
         $order->final_price += $service->price;
         $order->save();
@@ -74,10 +82,18 @@ class RepairOrderServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(RepairOrder $order,RepairOrderService $service)
+    public function destroy($order_id, $service_id)
     {
         if(Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $order = RepairOrder::where('id', $order_id)->first();
+        if (!$order) {
+            return response()->json(['error' => 'Заявка не найдена'], 404);
+        }
+        $service = RepairOrderService::where('id', $service_id)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Услуга не найдена'], 404);
         }
         $order->final_price -= $service->price;
         $order->save();

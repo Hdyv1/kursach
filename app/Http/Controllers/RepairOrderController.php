@@ -16,7 +16,6 @@ class RepairOrderController extends Controller
      */
     public function index()
     {
-
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
@@ -55,9 +54,13 @@ class RepairOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RepairOrder $order)
+    public function show($order_id)
     {
-        return response()->json($order->with(['device', 'services', 'reviews'])->first());
+        $order = RepairOrder::where('id', $order_id)->with(['device', 'services', 'reviews'])->first();
+        if (!$order) {
+            return response()->json(['error' => 'Заявка не найдена'], 404);
+        }
+        return response()->json($order, 200);
     }
 
     /**

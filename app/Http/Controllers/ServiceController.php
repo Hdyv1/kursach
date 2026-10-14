@@ -17,7 +17,7 @@ class ServiceController extends Controller
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json(Service::all(), 201);
+        return response()->json(Service::all());
     }
 
     /**
@@ -33,25 +33,26 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
-        if (Auth::check()) {
-            if (Auth::user()->role !== 'admin') {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-            $service = Service::create($request->all());
-            return response()->json(['message' => 'Услуга создана', 'service_id' => $service->id], 201);
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        $service = Service::create($request->all());
+        return response()->json(['message' => 'Услуга создана', 'service_id' => $service->id], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Service $service)
+    public function show($service_id)
     {
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json($service, 201);
+        $service = Service::where('id', $service_id)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Услуга не найдена'], 404);
+        }
+        return response()->json($service, 200);
     }
 
     /**
@@ -65,10 +66,14 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateServiceRequest $request, Service $service)
+    public function update(UpdateServiceRequest $request, $service_id)
     {
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $service = Service::where('id', $service_id)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Услуга не найдена'], 404);
         }
         $service->update($request->all());
         return response()->json(['message' => 'Услуга обновлена', 'service' => $service], 200);
@@ -77,10 +82,14 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service $service)
+    public function destroy($service_id)
     {
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $service = Service::where('id', $service_id)->first();
+        if (!$service) {
+            return response()->json(['error' => 'Услуга не найдена'], 404);
         }
         $service->delete();
         return response()->json(['message' => 'Услуга удалена'], 200);

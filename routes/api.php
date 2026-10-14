@@ -18,7 +18,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [RepairOrderController::class, 'index']);
     Route::get('/device/{device}', [DeviceController::class, 'show']);
     Route::get('/devices', [DeviceController::class, 'index']);
-    Route::resource('/services', ServiceController::class);
+    Route::post('/service', [ServiceController::class, 'store']);
+    Route::get('/services', [ServiceController::class, 'index']);
+    Route::get('/service/{service}', [ServiceController::class, 'show']);
+    Route::put('/service/{service}', [ServiceController::class, 'update']);
+    Route::delete('/service/{service}', [ServiceController::class, 'destroy']);
     Route::post('/orderServices/{order}/{service}', [RepairOrderServiceController::class, 'serviceAdd']);
     Route::delete('/orderServices/{order}/{service}', [RepairOrderServiceController::class, 'destroy']);
     Route::post('/review/{order}', [RepairOrderReviewController::class, 'store']);

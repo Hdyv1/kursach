@@ -14,13 +14,10 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) {
-            if (Auth::user()->role !== 'admin') {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-            return response()->json(Device::all());
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(Device::all());
     }
 
     /**
@@ -42,15 +39,16 @@ class DeviceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Device $device)
+    public function show($device_id)
     {
-        if (Auth::check()) {
-            if (Auth::user()->role !== 'admin') {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-            return response()->json($device, 201);
+        if (Auth::user()->role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        $device = Device::where('id', $device_id)->first();
+        if (!$device) {
+            return response()->json(['error' => 'Устройство не найдено'], 404);
+        }
+        return response()->json($device, 200);
     }
 
     /**
