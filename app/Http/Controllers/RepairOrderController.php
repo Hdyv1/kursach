@@ -76,7 +76,7 @@ class RepairOrderController extends Controller
         if (Auth::user()->role !== 'admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        if($request->status!== 'done' && $request->status !== 'in_progress' && $request->status !== 'pending') {
+        if($request->status!== 'done' && $request->status !== 'in_progress' && $request->status !== 'new') {
             return response()->json(['error' => 'Неверный статус'], 422);
         }
         $order->update($request->all());
